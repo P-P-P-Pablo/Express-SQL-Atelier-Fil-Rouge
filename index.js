@@ -64,7 +64,12 @@ app.post("/poste", (req, res) => {
   crud.create("deathnote", req.body, (err, results) =>
     routeResponse(res, err, results)
   );
-}); // INSERT
+}); // INSERT ex:
+//id:101
+//name:Jean-Michel Test
+//deathday:2007-07-27
+//time_lived:23
+//badguy:1
 
 app.put("/pute/:id", (req, res) => {
   crud.update("deathnote", req.body, req.params.id, (err, results) =>
@@ -72,23 +77,27 @@ app.put("/pute/:id", (req, res) => {
   );
 }); // UPDATE
 app.put("/pute/toggle/:id", (req, res) => {
-  let pouet = { time_lived: "!time_lived" };
-  crud.update("deathnote", pouet, req.params.id, (err, results) =>
-    routeResponse(res, err, results)
+  let toggle = { badguy: "!badguy" };
+  crud.update(
+    "deathnote",
+    null,
+    req.params.id,
+    (err, results) => routeResponse(res, err, results),
+    toggle
   );
 }); // toggle boolean
 
+app.delete("/dailaite/bad", (req, res) => {
+  crud.delete("deathnote", { badguy: 1 }, (err, results) =>
+    routeResponse(res, err, results)
+  );
+}); // delete all badguys
+
 app.delete("/dailaite/:id", (req, res) => {
-  crud.delete("deathnote", req.params.id, (err, results) =>
+  crud.delete("deathnote", { id: req.params.id }, (err, results) =>
     routeResponse(res, err, results)
   );
 }); // delete 1
-app.delete("/dailaite", (req, res) => {
-  crud.delete("deathnote", req.params.id, (err, results) =>
-    routeResponse(res, err, results)
-  ),
-    { filter: { badguy: true } };
-}); // delete all badguys
 
 app.listen(process.env.PORT, (err) => {
   if (err) {

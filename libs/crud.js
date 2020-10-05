@@ -2,9 +2,12 @@ const db = require("../db.js");
 module.exports = {
   create: (table, data, next) => {
     let fields = Object.keys(data).join(",");
-    let req = `INSERT INTO ${table} (${fields}) VALUES (?)`;
-    data = Object.values(data);
-    db.query(req, data, next);
+    data = Object.values(data)
+      .map((item) => "'" + item + "'")
+      .join(",");
+    console.log(data);
+    let req = `INSERT INTO ${table} (${fields}) VALUES (${data})`;
+    db.query(req, null, next);
   },
   read: (table, fields, next, options = {}) => {
     let where = "";
@@ -32,20 +35,17 @@ module.exports = {
     let req = `SELECT ${fields} FROM ${table} ${where} ${orderBy}`;
     db.query(req, [whereValue], next);
   },
-  update: (table, data, id, next) => {
-    db.query(`UPDATE ${table} SET ? WHERE id=?`, [data, id], next);
-  },
-  delete: (table, id, next, options = {}) => {
-    let where = "";
-    let whereValue = null;
-    if (options.filter !== undefined) {
-      let field = Object.keys(options.filter); // ['category_id']
-      where = ` WHERE  ${field[0]}=?`;
-      whereValue = options.filter[field[0]]; // 32
+  update: (table, data, id, next, toggle = null) => {
+    if (toggle !== undefined) {
+      db.query(`UPDATE ${table} SET badguy = 1-badguy WHERE id=?`, [id], next);
+    } else {
+      db.query(`UPDATE ${table} SET ? WHERE id=?`, [data, id], next);
     }
-    fields = fields.join(",");
-
-    let req = `DELETE FROM ${table} ${where}`;
-    db.query(req, id, [whereValue], next);
+  },
+  delete: (table, data, next) => {
+    let field = Object.keys(data);
+    let value = Object.values(data);
+    let req = `DELETE FROM ${table} WHERE ${field}=${value}`;
+    db.query(req, null, next);
   },
 };

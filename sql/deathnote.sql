@@ -14,7 +14,7 @@
 
 DROP TABLE IF EXISTS `deathnote`;
 CREATE TABLE `deathnote` (
-  `id` int(9) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `deathday` date NOT NULL,
   `time_lived` int(2) NOT NULL,
