@@ -7,3 +7,12 @@ exports.logInfos = (req, res, next) => {
   console.log(`${req.method} request from ${req.hostname}`);
   next();
 };
+
+exports.routeResponse = (res, err, results) => {
+  if (err) {
+    console.trace(err);
+    res.status(500).send(err);
+  } else {
+    res.send(results);
+  }
+};
